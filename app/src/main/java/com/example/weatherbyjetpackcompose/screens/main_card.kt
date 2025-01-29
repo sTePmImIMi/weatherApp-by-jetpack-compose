@@ -1,7 +1,5 @@
 package com.example.weatherbyjetpackcompose.screens
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,42 +7,39 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.weatherbyjetpackcompose.R
 import com.example.weatherbyjetpackcompose.ui.theme.BlueLight
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.launch
 
-@Preview(showBackground = true)
 @Composable
-fun main_screen() {
-    Image(
-        painter = painterResource(R.drawable.weather_bg),
-        contentDescription = "im1",
-        modifier = Modifier
-            .fillMaxSize()
-            .alpha(0.5f),
-        contentScale = ContentScale.FillBounds,
+fun main_card() {
 
-        )
     Column(
         modifier = Modifier
-            .fillMaxSize()
             .padding(5.dp)
     )
     {
@@ -148,3 +143,62 @@ fun main_screen() {
 
     }
 }
+
+// ------------------------------------------------------
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun TabLayout() {
+    val pagerState = rememberPagerState()
+    val titles = listOf("HOURS", "DAYS")
+    val coroutineScope = rememberCoroutineScope()
+    Column {
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 5.dp)
+                .clip(RoundedCornerShape(5.dp))
+        ) {
+            TabRow(
+                containerColor = BlueLight,
+                selectedTabIndex = pagerState.currentPage,
+            ) {
+                titles.forEachIndexed { index, title ->
+                    Tab(
+                        selected = pagerState.currentPage == index,
+                        onClick = {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(index)
+                            }
+                        },
+                        text = {
+                            Text(
+                                text = title,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                                color = Color.White
+                            )
+                        },
+                    )
+                }
+            }
+
+        }
+        HorizontalPager(                                                                            //для возможности прокрутки
+            count = titles.size,
+            state = pagerState,
+            modifier = Modifier.weight(1.0f),
+        )
+        { index ->
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+            )
+            {
+                items(15)
+                {
+                    WeatherListItem()
+                }
+            }
+        }
+    }
+}
+

@@ -40,7 +40,8 @@ android {
 }
 
 dependencies {
-
+    implementation (libs.xaccompanist.pager)
+    implementation (libs.accompanist.pager.indicators)
     implementation(libs.androidx.core.ktx)
     implementation(libs.coil.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)

@@ -53,5 +53,6 @@ fun WeatherByJetpackComposeTheme(
         colorScheme = colorScheme,
         typography = Typography,
         content = content
+
     )
 }
