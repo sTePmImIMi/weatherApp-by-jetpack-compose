@@ -18,10 +18,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.weatherbyjetpackcompose.data.WeatherModel
 import com.example.weatherbyjetpackcompose.ui.theme.BlueLight
 
 @Composable
-fun WeatherListItem() {
+fun WeatherListItem(item: WeatherModel) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -44,22 +45,22 @@ fun WeatherListItem() {
             Column(modifier = Modifier.padding(start = 8.dp, top = 5.dp, bottom = 5.dp))
             {
                 Text(
-                    text = "12:00",
+                    text = item.time,
                     color = Color.White
                 )
                 Text(
-                    text = "sunny",
+                    text = item.condition,
                     color = Color.White
                 )
 
             }
             Text(
-                text = "25°C",
+                text = item.currentTemp.ifEmpty { "${item.maxTemp}/${item.minTemp}" },
                 color = Color.White,
                 style = TextStyle(fontSize = 25.sp),
             )
             AsyncImage(
-                model = "https://cdn.weatherapi.com/weather/64x64/day/302.png",
+                model = "https:${item.icon}",
                 contentDescription = "im5",
                 modifier = Modifier
                     .padding(end = 8.dp)

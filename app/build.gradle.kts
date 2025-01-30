@@ -40,6 +40,7 @@ android {
 }
 
 dependencies {
+    implementation("com.android.volley:volley:1.2.1")
     implementation (libs.xaccompanist.pager)
     implementation (libs.accompanist.pager.indicators)
     implementation(libs.androidx.core.ktx)
@@ -51,6 +52,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.volley)
+    implementation(libs.androidx.tools.core)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

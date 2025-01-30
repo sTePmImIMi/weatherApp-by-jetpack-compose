@@ -10,7 +10,10 @@ espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.0"
 composeBom = "2024.04.01"
+volleyVersion = "1.2.1"
 xaccompanistPager = "0.19.0"
+volley = "1.2.1"
+toolsCore = "1.0.0-alpha10"
 
 [libraries]
 accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanistPagerIndicators" }
@@ -30,6 +33,9 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 xaccompanist-pager = { module = "com.google.accompanist: accompanist-pager", version.ref = "xaccompanistPager" }
+volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
+androidx-tools-core = { group = "androidx.privacysandbox.tools", name = "tools-core", version.ref = "toolsCore" }
+xandroid-volley = { module = "com. android.volley:volley", version.ref = "volleyVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
