@@ -38,7 +38,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 @Composable
-fun main_card(current_day: MutableState<WeatherModel>) {
+fun main_card(current_day: MutableState<WeatherModel>, onClickSync: () -> Unit, onClickSearch: () -> Unit) {
 
     Column(
         modifier = Modifier
@@ -90,7 +90,12 @@ fun main_card(current_day: MutableState<WeatherModel>) {
                     color = Color.White
                 )
                 Text(
-                    text = current_day.value.currentTemp.toFloat().toInt().toString() + "℃",
+                    text =
+                    if (current_day.value.currentTemp.isNotEmpty())
+                        current_day.value.currentTemp.toFloat().toInt().toString() + "℃"
+                    else
+                        "${current_day.value.maxTemp.toFloat().toInt()}℃/${current_day.value.minTemp.toFloat().toInt()}℃",
+
                     style = TextStyle(fontSize = 65.sp),
                     color = Color.White
                 )
@@ -108,7 +113,7 @@ fun main_card(current_day: MutableState<WeatherModel>) {
                     IconButton(
                         onClick =
                         {
-
+                            onClickSearch.invoke()
                         },
                     )
                     {
@@ -127,7 +132,7 @@ fun main_card(current_day: MutableState<WeatherModel>) {
                     IconButton(
                         onClick =
                         {
-
+                            onClickSync.invoke()
                         },
                     )
                     {

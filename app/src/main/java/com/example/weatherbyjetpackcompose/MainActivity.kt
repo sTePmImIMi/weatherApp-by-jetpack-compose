@@ -12,6 +12,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -22,6 +23,7 @@ import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.weatherbyjetpackcompose.data.WeatherModel
+import com.example.weatherbyjetpackcompose.screens.DialogSearch
 import com.example.weatherbyjetpackcompose.screens.main_card
 import com.example.weatherbyjetpackcompose.screens.tab_layout
 import com.example.weatherbyjetpackcompose.ui.theme.WeatherByJetpackComposeTheme
@@ -34,6 +36,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             WeatherByJetpackComposeTheme {
+
+                val dialogState = remember {
+                    mutableStateOf(false)
+                }
+
 
                 val days_list = remember {
                     mutableStateOf(listOf<WeatherModel>())
@@ -51,6 +58,13 @@ class MainActivity : ComponentActivity() {
                     ))
                 }
 
+                if (dialogState.value)
+                {
+                    DialogSearch(dialogState, onSubmit = {
+                        getData(it, this, days_list, current_day)
+                    })
+                }
+
                 getData("London", this, days_list, current_day)
 
                 Image(
@@ -64,7 +78,12 @@ class MainActivity : ComponentActivity() {
                     )
 
                 Column {
-                    main_card(current_day)
+                    main_card(current_day, onClickSync = {
+                        getData("London", this@MainActivity, days_list, current_day)
+                    },
+                        onClickSearch = {
+                            dialogState.value = true
+                        })
                     tab_layout(days_list, current_day)
                 }
             }

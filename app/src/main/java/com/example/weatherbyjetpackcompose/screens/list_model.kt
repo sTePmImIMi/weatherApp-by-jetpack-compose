@@ -1,5 +1,6 @@
 package com.example.weatherbyjetpackcompose.screens
 
+import android.app.Dialog
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,11 +12,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.TextButton
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,12 +49,15 @@ fun mainList(list: List<WeatherModel>, current_day: MutableState<WeatherModel>)
 
 @Composable
 fun weatherListItem(item: WeatherModel, current_day: MutableState<WeatherModel>) {
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 3.dp)
             .clickable {
+                if (item.hours.isEmpty()) return@clickable
                 current_day.value = item
+
             },
         colors = CardDefaults.cardColors(
             containerColor = BlueLight
@@ -91,4 +100,39 @@ fun weatherListItem(item: WeatherModel, current_day: MutableState<WeatherModel>)
             )
         }
     }
+}
+
+@Composable
+fun DialogSearch(dialogState: MutableState<Boolean>, onSubmit: (String) -> Unit)
+{
+    val dialogText = remember {
+        mutableStateOf("")
+    }
+    AlertDialog(
+        onDismissRequest = {
+            dialogState.value = false
+        },
+        confirmButton = {
+            onSubmit(dialogText.value)
+            TextButton(onClick = {
+                dialogState.value = false
+            }) { Text(text = "ok") }
+        },
+        dismissButton ={
+            TextButton(onClick = {
+                dialogState.value = false
+            }) { Text(text = "cancel") }
+        },
+
+        title = {
+            Column(modifier = Modifier.fillMaxWidth())
+            {
+                Text(text = "введите название города:")
+                TextField(value = dialogText.value, onValueChange = {
+                    dialogText.value = it
+                })
+            }
+        },
+
+        )
 }
