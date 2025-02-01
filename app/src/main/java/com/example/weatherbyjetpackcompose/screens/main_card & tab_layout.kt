@@ -3,12 +3,9 @@ package com.example.weatherbyjetpackcompose.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -37,9 +34,11 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
+import org.json.JSONArray
+import org.json.JSONObject
 
 @Composable
-fun main_card() {
+fun main_card(current_day: MutableState<WeatherModel>) {
 
     Column(
         modifier = Modifier
@@ -73,12 +72,12 @@ fun main_card() {
                 {
                     Text(
                         modifier = Modifier.padding(top = 8.dp, start = 8.dp),
-                        text = "20 Jun 2025 13:00",
+                        text = current_day.value.time,
                         style = TextStyle(fontSize = 15.sp),
                         color = Color.White,
                     )
                     AsyncImage(
-                        model = "https://cdn.weatherapi.com/weather/64x64/day/302.png",
+                        model = "https:" + current_day.value.icon,
                         contentDescription = "im2",
                         modifier = Modifier
                             .size(35.dp)
@@ -86,17 +85,17 @@ fun main_card() {
                     )
                 }
                 Text(
-                    text = "London",
+                    text = current_day.value.city,
                     style = TextStyle(fontSize = 24.sp),
                     color = Color.White
                 )
                 Text(
-                    text = "23°C",
+                    text = current_day.value.currentTemp.toFloat().toInt().toString() + "℃",
                     style = TextStyle(fontSize = 65.sp),
                     color = Color.White
                 )
                 Text(
-                    text = "Sunny",
+                    text = current_day.value.condition,
                     style = TextStyle(fontSize = 16.sp),
                     color = Color.White
                 )
@@ -120,7 +119,7 @@ fun main_card() {
                         )
                     }
                     Text(
-                        text = "23°C/12°C",
+                        text = "${current_day.value.maxTemp.toFloat().toInt()}℃/${current_day.value.minTemp.toFloat().toInt()}℃",
                         style = TextStyle(fontSize = 16.sp),
                         color = Color.White
                     )
@@ -151,7 +150,7 @@ fun main_card() {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun tab_layout(days_list: MutableState<List<WeatherModel>>) {
+fun tab_layout(days_list: MutableState<List<WeatherModel>>, current_day: MutableState<WeatherModel>) {
     val pagerState = rememberPagerState()
     val titles = listOf("HOURS", "DAYS")
     val coroutineScope = rememberCoroutineScope()
@@ -187,24 +186,42 @@ fun tab_layout(days_list: MutableState<List<WeatherModel>>) {
 
         }
         HorizontalPager(
-            //для возможности прокрутки
             count = titles.size,
             state = pagerState,
             modifier = Modifier.weight(1.0f),
         )
         { index ->
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                itemsIndexed(
-                    days_list.value
-                )
-                { _, item ->
-                    WeatherListItem(item)
-
-                }
+            val list = when(index)
+            {
+                0 -> getWeatherByHours(current_day.value.hours)
+                1 -> days_list.value
+                else -> days_list.value
             }
+            mainList(list, current_day)
         }
     }
 }
 
+private fun getWeatherByHours(hours: String): List<WeatherModel>
+{
+    if (hours.isEmpty()) return listOf()
+
+    val hours_array = JSONArray(hours)
+
+    val list = ArrayList<WeatherModel>()
+    for (i in 0 until hours_array.length())
+    {
+        val item = hours_array[i] as JSONObject
+        list.add(WeatherModel(
+            "",
+            item.getString("time"),
+            item.getString("temp_c").toFloat().toInt().toString() + "℃",
+            item.getJSONObject("condition").getString("text"),
+            item.getJSONObject("condition").getString("icon"),
+            "",
+            "",
+             "",
+        ))
+    }
+    return list
+}
