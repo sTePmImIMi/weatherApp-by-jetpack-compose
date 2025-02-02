@@ -38,7 +38,11 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 @Composable
-fun main_card(current_day: MutableState<WeatherModel>, onClickSync: () -> Unit, onClickSearch: () -> Unit) {
+fun main_card(
+    current_day: MutableState<WeatherModel>,
+    onClickSync: () -> Unit,
+    onClickSearch: () -> Unit
+) {
 
     Column(
         modifier = Modifier
@@ -94,7 +98,9 @@ fun main_card(current_day: MutableState<WeatherModel>, onClickSync: () -> Unit, 
                     if (current_day.value.currentTemp.isNotEmpty())
                         current_day.value.currentTemp.toFloat().toInt().toString() + "℃"
                     else
-                        "${current_day.value.maxTemp.toFloat().toInt()}℃/${current_day.value.minTemp.toFloat().toInt()}℃",
+                        "${
+                            current_day.value.maxTemp.toFloat().toInt()
+                        }℃/${current_day.value.minTemp.toFloat().toInt()}℃",
 
                     style = TextStyle(fontSize = 65.sp),
                     color = Color.White
@@ -124,7 +130,9 @@ fun main_card(current_day: MutableState<WeatherModel>, onClickSync: () -> Unit, 
                         )
                     }
                     Text(
-                        text = "${current_day.value.maxTemp.toFloat().toInt()}℃/${current_day.value.minTemp.toFloat().toInt()}℃",
+                        text = "${
+                            current_day.value.maxTemp.toFloat().toInt()
+                        }℃/${current_day.value.minTemp.toFloat().toInt()}℃",
                         style = TextStyle(fontSize = 16.sp),
                         color = Color.White
                     )
@@ -155,7 +163,10 @@ fun main_card(current_day: MutableState<WeatherModel>, onClickSync: () -> Unit, 
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun tab_layout(days_list: MutableState<List<WeatherModel>>, current_day: MutableState<WeatherModel>) {
+fun tab_layout(
+    days_list: MutableState<List<WeatherModel>>,
+    current_day: MutableState<WeatherModel>
+) {
     val pagerState = rememberPagerState()
     val titles = listOf("HOURS", "DAYS")
     val coroutineScope = rememberCoroutineScope()
@@ -196,8 +207,7 @@ fun tab_layout(days_list: MutableState<List<WeatherModel>>, current_day: Mutable
             modifier = Modifier.weight(1.0f),
         )
         { index ->
-            val list = when(index)
-            {
+            val list = when (index) {
                 0 -> getWeatherByHours(current_day.value.hours)
                 1 -> days_list.value
                 else -> days_list.value
@@ -207,26 +217,26 @@ fun tab_layout(days_list: MutableState<List<WeatherModel>>, current_day: Mutable
     }
 }
 
-private fun getWeatherByHours(hours: String): List<WeatherModel>
-{
+private fun getWeatherByHours(hours: String): List<WeatherModel> {
     if (hours.isEmpty()) return listOf()
 
     val hours_array = JSONArray(hours)
 
     val list = ArrayList<WeatherModel>()
-    for (i in 0 until hours_array.length())
-    {
+    for (i in 0 until hours_array.length()) {
         val item = hours_array[i] as JSONObject
-        list.add(WeatherModel(
-            "",
-            item.getString("time"),
-            item.getString("temp_c").toFloat().toInt().toString() + "℃",
-            item.getJSONObject("condition").getString("text"),
-            item.getJSONObject("condition").getString("icon"),
-            "",
-            "",
-             "",
-        ))
+        list.add(
+            WeatherModel(
+                "",
+                item.getString("time"),
+                item.getString("temp_c").toFloat().toInt().toString() + "℃",
+                item.getJSONObject("condition").getString("text"),
+                item.getJSONObject("condition").getString("icon"),
+                "",
+                "",
+                "",
+            )
+        )
     }
     return list
 }

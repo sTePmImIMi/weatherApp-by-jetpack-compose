@@ -12,7 +12,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -31,6 +30,7 @@ import org.json.JSONObject
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.Q)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -40,26 +40,25 @@ class MainActivity : ComponentActivity() {
                 val dialogState = remember {
                     mutableStateOf(false)
                 }
-
-
                 val days_list = remember {
                     mutableStateOf(listOf<WeatherModel>())
                 }
                 val current_day = remember {
-                    mutableStateOf(WeatherModel(
-                        "",
-                        "",
-                        "0.0",
-                        "",
-                        "",
-                        "0.0",
-                        "0.0",
-                        "",
-                    ))
+                    mutableStateOf(
+                        WeatherModel(
+                            "",
+                            "",
+                            "0.0",
+                            "",
+                            "",
+                            "0.0",
+                            "0.0",
+                            "",
+                        )
+                    )
                 }
 
-                if (dialogState.value)
-                {
+                if (dialogState.value) {
                     DialogSearch(dialogState, onSubmit = {
                         getData(it, this, days_list, current_day)
                     })
@@ -91,10 +90,12 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-private fun getData(city: String,
-                    context: Context,
-                    days_list: MutableState<List<WeatherModel>>,
-                    current_day: MutableState<WeatherModel>) {
+private fun getData(
+    city: String,
+    context: Context,
+    days_list: MutableState<List<WeatherModel>>,
+    current_day: MutableState<WeatherModel>
+) {
 
     val url = "https://api.weatherapi.com/v1/forecast.json?key=" +
             "5ad4ce260e334e2a9c2140735252701" +
@@ -107,6 +108,7 @@ private fun getData(city: String,
         Request.Method.GET,
         url,
         { response ->
+            Log.d("WeatherAPI", "Query: $response")
             val list = getWeatherByDays(response)
             current_day.value = list[0]
             days_list.value = list

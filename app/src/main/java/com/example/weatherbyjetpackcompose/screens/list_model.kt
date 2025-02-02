@@ -1,6 +1,6 @@
 package com.example.weatherbyjetpackcompose.screens
 
-import android.app.Dialog
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,8 +33,7 @@ import com.example.weatherbyjetpackcompose.data.WeatherModel
 import com.example.weatherbyjetpackcompose.ui.theme.BlueLight
 
 @Composable
-fun mainList(list: List<WeatherModel>, current_day: MutableState<WeatherModel>)
-{
+fun mainList(list: List<WeatherModel>, current_day: MutableState<WeatherModel>) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -103,8 +102,7 @@ fun weatherListItem(item: WeatherModel, current_day: MutableState<WeatherModel>)
 }
 
 @Composable
-fun DialogSearch(dialogState: MutableState<Boolean>, onSubmit: (String) -> Unit)
-{
+fun DialogSearch(dialogState: MutableState<Boolean>, onSubmit: (String) -> Unit) {
     val dialogText = remember {
         mutableStateOf("")
     }
@@ -113,12 +111,13 @@ fun DialogSearch(dialogState: MutableState<Boolean>, onSubmit: (String) -> Unit)
             dialogState.value = false
         },
         confirmButton = {
-            onSubmit(dialogText.value)
             TextButton(onClick = {
+                onSubmit(dialogText.value)
+                Log.d("DialogSearch", "Введено: ${dialogText.value}")
                 dialogState.value = false
             }) { Text(text = "ok") }
         },
-        dismissButton ={
+        dismissButton = {
             TextButton(onClick = {
                 dialogState.value = false
             }) { Text(text = "cancel") }
